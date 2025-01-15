@@ -10,7 +10,7 @@ class PlayerControl():
         self.angle_h = 0  # Горизонтальный угол
         self.angle_v = 0  # Вертикальный угол
         self.speed = 4.0  # Скорость движения (по горизонтали)
-        self.vertical_speed = 1  # Скорость движения по оси Z (вверх/вниз)
+        self.vertical_speed = 3  # Скорость движения по оси Z (вверх/вниз)
         self.movement = {"forward": 0, "backward": 0, "left": 0, "right": 0, "up": 0, "down": 0}  # Направления движения
 
         # Скрытие курсора и его блокировка в центре экрана
@@ -91,7 +91,7 @@ class PlayerControl():
         heading_matrix = base.camera.getMat().getUpper3().getRow(0)
         forward_vec = Vec3(heading_matrix[0], heading_matrix[1], 0)
         forward_vec.normalize()
-        print(forward_vec)
+        #print(forward_vec)
         # Перпендикулярный вектор для движения вправо/влево
         right_vec = Vec3(forward_vec.getY(), -forward_vec.getX(), 0)
         right_vec.normalize()
@@ -106,8 +106,10 @@ class PlayerControl():
             up_vec * (self.movement["up"] - self.movement["down"])  # Это теперь up/down
         )
         # Нормализация вектора и обновление позиции камеры
-        print(base.camera.getPos() + move_vec * self.speed * dt)
-        if move_vec.length_squared() > 0:
+        #print(base.camera.getPos() + move_vec * self.speed * dt)
+        x1, y1, z1 = (base.camera.getPos() + move_vec * self.speed * dt) + forward_vec
+        core2 = (round(x1), round(y1), round(z1 - 2)) in self.map.spisok_grass_block
+        if move_vec.length_squared() > 0 and not core2:
             '''x, y, z = base.camera.getPos()
             core = (int(x), int(y), int(z)) in self.map.spisok_grass_block
             if core == False:'''
@@ -125,6 +127,9 @@ class PlayerControl():
         if not core:
             x, y, z = base.camera.getPos() - up_vec * self.vertical_speed * dt
             base.camera.setPos((x, y, z))
+
+
+
 
 
 
